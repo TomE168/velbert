@@ -13,8 +13,8 @@ import org.matsim.api.core.v01.population.Person;
 import java.util.*;
 
 public class MainModeHandler implements TransitDriverStartsEventHandler, PersonDepartureEventHandler, ActivityEndEventHandler {
-
-    private static final List<String> modes = List.of(TransportMode.walk, TransportMode.bike, TransportMode.ride, TransportMode.car, TransportMode.pt, TransportMode.airplane);
+    // ride müssen wir rausnehmen
+    private static final List<String> modes = List.of(TransportMode.walk, TransportMode.bike, TransportMode.car, TransportMode.pt, TransportMode.airplane);
     // Unterschied Map und Set?
     private final Set<Id<Person>> transitDrivers = new HashSet<>();
     private final Map<Id<Person>, List<String>> personTrips = new HashMap<>();
@@ -34,6 +34,8 @@ public class MainModeHandler implements TransitDriverStartsEventHandler, PersonD
     public void handleEvent(PersonDepartureEvent e) {
 
         if (transitDrivers.contains(e.getPersonId())) return;
+        //wenn person nicht aus dollution area, dann return
+        //if (person.area.equals("velbert")) { }
 
         var trips = personTrips.get(e.getPersonId());
 

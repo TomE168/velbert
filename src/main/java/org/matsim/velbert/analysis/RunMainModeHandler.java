@@ -18,7 +18,7 @@ public class RunMainModeHandler {
         var manager = EventsUtils.createEventsManager();
         var handler = new MainModeHandler();
         manager.addHandler(handler);
-        EventsUtils.readEvents(manager, "C:\\Users\\tekuh\\Downloads\\...");
+        EventsUtils.readEvents(manager, "C:\\Users\\tekuh\\OneDrive\\Master\\Matsim\\velbert-output-2705\\velbert.output_events.xml.gz");
 
         var personTrips = handler.getPersonTrips();
         var modes = personTrips.values().stream()
@@ -29,7 +29,7 @@ public class RunMainModeHandler {
                 .mapToDouble(d -> d)
                 .sum();
 
-        try (var writer = Files.newBufferedWriter(Paths.get("C:\\Users\\tekuh\\Desktop\\modes.csv")); var printer = CSVFormat.DEFAULT.withDelimiter(',').withHeader("Mode", "Count", "Share").print(writer)) {
+        try (var writer = Files.newBufferedWriter(Paths.get("C:\\Users\\tekuh\\OneDrive\\Desktop\\modes.csv")); var printer = CSVFormat.DEFAULT.withDelimiter(',').withHeader("Mode", "Count", "Share").print(writer)) {
 
             for (var entry : modes.entrySet()) {
                 printer.printRecord(entry.getKey(), entry.getValue(), entry.getValue() / totalTrips);
