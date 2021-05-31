@@ -14,7 +14,7 @@ import java.util.*;
 
 public class MainModeHandler implements TransitDriverStartsEventHandler, PersonDepartureEventHandler, ActivityEndEventHandler {
     // ride müssen wir rausnehmen
-    private static final List<String> modes = List.of(TransportMode.walk, TransportMode.bike, TransportMode.car, TransportMode.pt, TransportMode.airplane);
+    private static final List<String> modes = List.of(TransportMode.walk, TransportMode.bike, TransportMode.ride, TransportMode.car, TransportMode.pt, TransportMode.airplane);
     // Unterschied Map und Set?
     private final Set<Id<Person>> transitDrivers = new HashSet<>();
     private final Map<Id<Person>, List<String>> personTrips = new HashMap<>();
