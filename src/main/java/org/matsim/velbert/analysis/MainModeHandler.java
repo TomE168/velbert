@@ -13,9 +13,7 @@ import org.matsim.api.core.v01.population.Person;
 import java.util.*;
 
 public class MainModeHandler implements TransitDriverStartsEventHandler, PersonDepartureEventHandler, ActivityEndEventHandler {
-    // ride müssen wir rausnehmen
     private static final List<String> modes = List.of(TransportMode.walk, TransportMode.bike, TransportMode.ride, TransportMode.car, TransportMode.pt, TransportMode.airplane);
-    // Unterschied Map und Set?
     private final Set<Id<Person>> transitDrivers = new HashSet<>();
     private final Map<Id<Person>, List<String>> personTrips = new HashMap<>();
     public Map<Id<Person>, List<String>> getPersonTrips() {
@@ -24,9 +22,7 @@ public class MainModeHandler implements TransitDriverStartsEventHandler, PersonD
 
     @Override
     public void handleEvent(ActivityEndEvent e) {
-        // transitDriver sind Busfahrer?
         if (transitDrivers.contains(e.getPersonId()) || isInteraction(e.getActType())) return;
-        // wenn personen ID aus event nicht in personTrips, dann schreibe id in personTrips gemapped mit neuem Array
         personTrips.computeIfAbsent(e.getPersonId(), id -> new ArrayList<>()).add("");
     }
 
@@ -34,9 +30,6 @@ public class MainModeHandler implements TransitDriverStartsEventHandler, PersonD
     public void handleEvent(PersonDepartureEvent e) {
 
         if (transitDrivers.contains(e.getPersonId())) return;
-        //wenn person nicht aus dollution area, dann return
-        //if (person.area.equals("velbert")) { }
-
         var trips = personTrips.get(e.getPersonId());
 
         var mainMode = getMainMode(getLast(trips), e.getLegMode());
@@ -68,4 +61,5 @@ public class MainModeHandler implements TransitDriverStartsEventHandler, PersonD
     private void setLast(List<String> to, String value) {
         to.set(to.size() - 1, value);
     }
+
 }
