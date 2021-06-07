@@ -1,13 +1,11 @@
 package org.matsim.analysis;
-import com.sun.jdi.event.EventSet;
-import com.vividsolutions.jts.geom.Geometry;
+
+import org.locationtech.jts.geom.Geometry;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Population;
-import org.matsim.core.api.experimental.events.EventsManager;
-import org.matsim.core.events.EventsUtils;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.router.TripStructureUtils;
@@ -26,39 +24,27 @@ public class PopulationFilter {
     private static final String outputEventsFile = "C:\\Users\\tekuh\\OneDrive\\Master\\Matsim\\velbert.output_eventsFiltered.xml.gz";
     private static final String networkFile = "C:\\Users\\tekuh\\OneDrive\\Master\\Matsim\\output-velbert-0206\\velbert.output_network.xml.gz";
     private static final List<String> dilutionAreaPlz = new ArrayList<String>(Arrays.asList("42551", "42549", "42555", "42553"));
-    
-
-    public static void main(String[] args) {
+    public List<Id> getPersonIdWhichAreInDilutionArea(){
         // für jede Person Home coordinates speichern
         var population = PopulationUtils.readPopulation(populationFile);
-        Map<Id, Coord> personIdWithHome = mapPersonIdWithHome(population);
-        List<Id> personIdInDilutionArea = filterPersonWithHomeInDilutionArea(personIdWithHome, dilutionAreaPlz);
-        // checke if home coordinates sind in dolution area
-        // wenn ja, speichere person ID
-
-        // filter events file nach person ID
-        var manager = EventsUtils.createEventsManager();
-        EventsUtils.readEvents(manager, eventsFile);
-        EventSet outputEvents = filterEventsByPersonId(manager, personIdInDilutionArea);
-        safeOutputEvents(outputEvents, outputEventsFile);
-
+        return getPersonIdWichHomeIsInDilutionArea(population);
     }
 
-    private static Map<Id, Coord> mapPersonIdWithHome(Population population) {
+    private static List<Id> getPersonIdWichHomeIsInDilutionArea(Population population) {
             var features = ShapeFileReader.getAllFeatures(postleitzahlenGebiete);
             Network network = NetworkUtils.readNetwork(networkFile);
-            Map<Id, Coord> personIdWithHomeCoord = new HashMap<>();
+            List<Id> personIdWichHomeIsInDilutionArea = new ArrayList<>();
             for (var person : population.getPersons().values()) {
                 var plan = person.getSelectedPlan();
                 var activities = TripStructureUtils.getActivities(plan, TripStructureUtils.StageActivityHandling.ExcludeStageActivities);
                 for (var activity : activities) {
                     if (activity.getType().contains("home") && isInDilutionAreaGeometry(getCoord(activity, network), getDilutionAreaGeometry(features))) {
-                        personIdWithHomeCoord.put(person.getId(), activity.getCoord());
+                        personIdWichHomeIsInDilutionArea.add(person.getId());
                         break;
                     }
                 }
             }
-            return personIdWithHomeCoord;
+            return personIdWichHomeIsInDilutionArea;
         }
 
     private static Coord getCoord(Activity activity, Network network) {
@@ -81,15 +67,7 @@ public class PopulationFilter {
                 .findAny()
                 .orElseThrow();
     }
-    private static List<Id> filterPersonWithHomeInDilutionArea(Map<Id, Coord> personIdWithHome, List<String> dilutionAreaPlz) {
-    }
 
-    private static void safeOutputEvents(Object outputEvents, String outputEventsFile) {
-
-    }
-    private static EventSet filterEventsByPersonId(EventsManager manager, List<Id> personIdList) {
-
-    }
 
 //    private static boolean isCoordInPlz(Coord coord, List Plz){
 //        return plz.contains(getGeometriesFromPlz(coord));
