@@ -18,7 +18,7 @@ public class RunMainModeHandler {
         var manager = EventsUtils.createEventsManager();
         var handler = new MainModeHandler();
         manager.addHandler(handler);
-        EventsUtils.readEvents(manager, "C:\\Users\\tekuh\\OneDrive\\Master\\Matsim\\output-velbert-0106\\velbert.output_events.xml.gz");
+        EventsUtils.readEvents(manager, "C:\\Users\\tekuh\\OneDrive\\Master\\Matsim\\output-velbert-0206\\velbert.output_events.xml.gz");
 
         var personTrips = handler.getPersonTrips();
         var modes = personTrips.values().stream()

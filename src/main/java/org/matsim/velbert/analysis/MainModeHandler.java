@@ -1,6 +1,6 @@
 package org.matsim.velbert.analysis;
 
-import org.matsim.analysis.PopulationFilter;
+
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.events.ActivityEndEvent;
@@ -18,7 +18,7 @@ public class MainModeHandler implements TransitDriverStartsEventHandler, PersonD
     private final Set<Id<Person>> transitDrivers = new HashSet<>();
     private final Map<Id<Person>, List<String>> personTrips = new HashMap<>();
     private PopulationFilter populationFilter = new PopulationFilter();
-    private List<Id> personIdWhichAreInDilutionArea = populationFilter.getPersonIdWhichAreInDilutionArea();
+    private List<Id> personIdWhichHomeIsInDilutionArea = populationFilter.getPersonIdWhichHomeIsInDilutionArea();
 
     public Map<Id<Person>, List<String>> getPersonTrips() {
         return personTrips;
@@ -32,7 +32,7 @@ public class MainModeHandler implements TransitDriverStartsEventHandler, PersonD
 
     @Override
     public void handleEvent(PersonDepartureEvent e) {
-        if (personIdWhichAreInDilutionArea.contains(e.getPersonId())) {
+        if (personIdWhichHomeIsInDilutionArea.contains(e.getPersonId())) {
             if (transitDrivers.contains(e.getPersonId())) return;
             var trips = personTrips.get(e.getPersonId());
 

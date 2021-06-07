@@ -1,4 +1,4 @@
-package org.matsim.analysis;
+package org.matsim.velbert.analysis;
 
 import org.locationtech.jts.geom.Geometry;
 import org.matsim.api.core.v01.Coord;
@@ -17,15 +17,12 @@ import org.opengis.feature.simple.SimpleFeature;
 
 import java.util.*;
 public class PopulationFilter {
-    private static final CoordinateTransformation transformation = TransformationFactory.getCoordinateTransformation("EPSG:31468", "EPSG:3857");
+    private static final CoordinateTransformation transformation = TransformationFactory.getCoordinateTransformation("EPSG:25832", "EPSG:3857");
     private static final String postleitzahlenGebiete = "C:\\Users\\tekuh\\Downloads\\OSM_PLZ_072019.shp";
     private static final String populationFile = "C:\\Users\\tekuh\\OneDrive\\Master\\Matsim\\output-velbert-0206\\velbert.output_plans.xml.gz";
-    private static final String eventsFile = "C:\\Users\\tekuh\\OneDrive\\Master\\Matsim\\output-velbert-0206\\velbert.output_events.xml.gz";
-    private static final String outputEventsFile = "C:\\Users\\tekuh\\OneDrive\\Master\\Matsim\\velbert.output_eventsFiltered.xml.gz";
     private static final String networkFile = "C:\\Users\\tekuh\\OneDrive\\Master\\Matsim\\output-velbert-0206\\velbert.output_network.xml.gz";
-    private static final List<String> dilutionAreaPlz = new ArrayList<String>(Arrays.asList("42551", "42549", "42555", "42553"));
-    public List<Id> getPersonIdWhichAreInDilutionArea(){
-        // für jede Person Home coordinates speichern
+    private static final List<String> dilutionAreaPlz = new ArrayList<>(Arrays.asList("42551", "42549", "42555", "42553"));
+    public List<Id> getPersonIdWhichHomeIsInDilutionArea(){
         var population = PopulationUtils.readPopulation(populationFile);
         return getPersonIdWichHomeIsInDilutionArea(population);
     }
@@ -38,17 +35,19 @@ public class PopulationFilter {
                 var plan = person.getSelectedPlan();
                 var activities = TripStructureUtils.getActivities(plan, TripStructureUtils.StageActivityHandling.ExcludeStageActivities);
                 for (var activity : activities) {
-                    if (activity.getType().contains("home") && isInDilutionAreaGeometry(getCoord(activity, network), getDilutionAreaGeometry(features))) {
+                    var activityCoord = getCoord(activity, network);
+                    var dilutionAreaGeometry = getDilutionAreaGeometry(features);
+                    if (activity.getType().contains("home") && isInDilutionAreaGeometry(activityCoord, dilutionAreaGeometry)) {
                         personIdWichHomeIsInDilutionArea.add(person.getId());
                         break;
                     }
                 }
             }
+            System.out.println(personIdWichHomeIsInDilutionArea);
             return personIdWichHomeIsInDilutionArea;
         }
 
     private static Coord getCoord(Activity activity, Network network) {
-
         if (activity.getCoord() != null) {
             return activity.getCoord();
         }
