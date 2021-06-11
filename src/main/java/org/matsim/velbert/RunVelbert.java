@@ -14,7 +14,7 @@ public class RunVelbert {
 
     public static void main(String[] args) {
 
-        var config = ConfigUtils.loadConfig("scenarios/equil/config.xml");
+        var config = ConfigUtils.loadConfig(args);
 
         config.plansCalcRoute().setAccessEgressType(PlansCalcRouteConfigGroup.AccessEgressType.accessEgressModeToLink);
 
