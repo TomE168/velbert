@@ -13,12 +13,12 @@ import org.matsim.api.core.v01.population.Person;
 
 import java.util.*;
 
-public class MainModeHandler implements TransitDriverStartsEventHandler, PersonDepartureEventHandler, ActivityEndEventHandler {
+public class MainModeHandlerWithFilter implements TransitDriverStartsEventHandler, PersonDepartureEventHandler, ActivityEndEventHandler {
     private static final List<String> modes = List.of(TransportMode.walk, TransportMode.bike, TransportMode.ride, TransportMode.car, TransportMode.pt, TransportMode.airplane);
     private final Set<Id<Person>> transitDrivers = new HashSet<>();
     private final Map<Id<Person>, List<String>> personTrips = new HashMap<>();
     private PopulationFilter populationFilter = new PopulationFilter();
-    private List<Id> personIdWhichHomeIsInDilutionArea = populationFilter.getPersonIdWhichHomeIsInDilutionArea();
+    private Set<Id> personIdWhichHomeIsInDilutionArea = populationFilter.getPersonIdWhichHomeIsInDilutionArea();
 
     public Map<Id<Person>, List<String>> getPersonTrips() {
         return personTrips;
@@ -26,8 +26,10 @@ public class MainModeHandler implements TransitDriverStartsEventHandler, PersonD
 
     @Override
     public void handleEvent(ActivityEndEvent e) {
-        if (transitDrivers.contains(e.getPersonId()) || isInteraction(e.getActType())) return;
-        personTrips.computeIfAbsent(e.getPersonId(), id -> new ArrayList<>()).add("");
+        if (personIdWhichHomeIsInDilutionArea.contains(e.getPersonId())) {
+            if (transitDrivers.contains(e.getPersonId()) || isInteraction(e.getActType())) return;
+            personTrips.computeIfAbsent(e.getPersonId(), id -> new ArrayList<>()).add("");
+        }
     }
 
     @Override
@@ -35,7 +37,6 @@ public class MainModeHandler implements TransitDriverStartsEventHandler, PersonD
         if (personIdWhichHomeIsInDilutionArea.contains(e.getPersonId())) {
             if (transitDrivers.contains(e.getPersonId())) return;
             var trips = personTrips.get(e.getPersonId());
-
             var mainMode = getMainMode(getLast(trips), e.getLegMode());
             setLast(trips, mainMode);
         }
@@ -43,8 +44,7 @@ public class MainModeHandler implements TransitDriverStartsEventHandler, PersonD
 
     @Override
     public void handleEvent(TransitDriverStartsEvent transitDriverStartsEvent) {
-
-        transitDrivers.add(transitDriverStartsEvent.getDriverId());
+            transitDrivers.add(transitDriverStartsEvent.getDriverId());
     }
 
     private boolean isInteraction(String type) {

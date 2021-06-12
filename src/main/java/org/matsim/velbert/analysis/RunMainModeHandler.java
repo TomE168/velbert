@@ -1,14 +1,12 @@
 package org.matsim.velbert.analysis;
 
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 import org.matsim.core.events.EventsUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class RunMainModeHandler {
@@ -16,9 +14,9 @@ public class RunMainModeHandler {
     public static void main(String[] args) {
 
         var manager = EventsUtils.createEventsManager();
-        var handler = new MainModeHandler();
+        var handler = new MainModeHandlerWithFilter();
         manager.addHandler(handler);
-        EventsUtils.readEvents(manager, "C:\\Users\\tekuh\\OneDrive\\Master\\Matsim\\output-velbert-0206\\velbert.output_events.xml.gz");
+        EventsUtils.readEvents(manager, "C:\\Users\\tekuh\\OneDrive\\Master\\Matsim\\output-MUT\\output-velbert-2705\\velbert.output_events.xml.gz");
 
         var personTrips = handler.getPersonTrips();
         var modes = personTrips.values().stream()
