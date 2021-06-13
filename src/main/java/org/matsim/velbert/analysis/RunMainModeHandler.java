@@ -16,7 +16,7 @@ public class RunMainModeHandler {
         var manager = EventsUtils.createEventsManager();
         var handler = new MainModeHandlerWithFilter();
         manager.addHandler(handler);
-        EventsUtils.readEvents(manager, "C:\\Users\\tekuh\\OneDrive\\Master\\Matsim\\output-MUT\\output-velbert-2705\\velbert.output_events.xml.gz");
+        EventsUtils.readEvents(manager, "C:\\Users\\tekuh\\OneDrive\\Master\\Matsim\\output-NEU\\005\\velbert-matsim-1pct-calibration-005.output_events.xml.gz");
 
         var personTrips = handler.getPersonTrips();
         var modes = personTrips.values().stream()
