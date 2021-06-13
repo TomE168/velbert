@@ -18,7 +18,7 @@ public class MainModeHandlerWithFilter implements TransitDriverStartsEventHandle
     private final Set<Id<Person>> transitDrivers = new HashSet<>();
     private final Map<Id<Person>, List<String>> personTrips = new HashMap<>();
     private PopulationFilter populationFilter = new PopulationFilter();
-    private Set<Id> personIdWhichHomeIsInDilutionArea = populationFilter.getPersonIdWhichHomeIsInDilutionArea();
+    private Set<?> personIdWhichHomeIsInDilutionArea = populationFilter.getPersonIdWhichHomeIsInDilutionArea();
 
     public Map<Id<Person>, List<String>> getPersonTrips() {
         return personTrips;
